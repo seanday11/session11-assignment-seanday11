@@ -1,0 +1,56 @@
+import React, { useState, useEffect } from 'react';
+import { Button, TextField, Snackbar } from '@mui/material';
+
+function App() {
+  const [todos, setTodos] = useState([]);
+  const [input, setInput] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [lastAddedTodo, setLastAddedTodo] = useState('');
+
+  const handleAddTodo = () => {
+    if (input.trim() === '') return;
+    const newTodo = input.trim();
+    setTodos([...todos, newTodo]);
+    setLastAddedTodo(newTodo);
+    setSnackbarOpen(true);
+    setInput('');
+  };
+
+  useEffect(() => {
+    if (snackbarOpen) {
+      const timer = setTimeout(() => {
+        setSnackbarOpen(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [snackbarOpen]);
+
+  return (
+    <div style={{ padding: 20 }}>
+      <h2>Todo App</h2>
+      <TextField
+        label="Enter a todo"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        variant="outlined"
+        size="small"
+        style={{ marginRight: 8 }}
+      />
+      <Button variant="contained" onClick={handleAddTodo}>
+        Add
+      </Button>
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={index}>{todo}</li>
+        ))}
+      </ul>
+      <Snackbar
+        open={snackbarOpen}
+        message={`Added: ${lastAddedTodo}`}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
+    </div>
+  );
+}
+
+export default App;
